@@ -1,0 +1,13 @@
+- name: Install nmap on Ubuntu host
+  hosts: pgsql-citus-2
+  become: yes
+  tasks:
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: yes
+      changed_when: false
+
+    - name: Install nmap
+      ansible.builtin.apt:
+        name: nmap
+        state: present
