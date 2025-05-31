@@ -2,22 +2,6 @@
   hosts: all
   become: yes
   tasks:
-    - name: Wait for apt lock to be released
-      ansible.builtin.wait_for:
-        path: /var/lib/apt/lists/lock
-        state: absent
-        timeout: 300
-      retries: 5
-      delay: 10
-
-    - name: Wait for dpkg lock to be released
-      ansible.builtin.wait_for:
-        path: /var/lib/dpkg/lock-frontend
-        state: absent
-        timeout: 300
-      retries: 5
-      delay: 10
-
     - name: Update apt cache
       ansible.builtin.apt:
         update_cache: yes
