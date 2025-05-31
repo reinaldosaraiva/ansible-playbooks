@@ -1,0 +1,47 @@
+- name: Manage nmap installation based on NetBox nmap tag
+  hosts: all
+  become: yes
+  tasks:
+    - name: Wait for apt lock to be released
+      ansible.builtin.wait_for:
+        path: /var/lib/apt/lists/lock
+        state: absent
+        timeout: 300
+      retries: 5
+      delay: 10
+
+    - name: Wait for dpkg lock to be released
+      ansible.builtin.wait_for:
+        path: /var/lib/dpkg/lock-frontend
+        state: absent
+        timeout: 300
+      retries: 5
+      delay: 10
+
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: yes
+      changed_when: false
+
+    - name: Get device tags from NetBox
+      netbox.netbox.netbox_device:
+        netbox_url: "http://177.93.133.239:8000"
+        netbox_token: "{{ netbox_token }}"
+        data:
+          name: "{{ inventory_hostname }}"
+        state: present
+        query_only: true
+      register: netbox_device
+
+    - name: Install nmap if nmap tag is present
+      ansible.builtin.apt:
+        name: nmap
+        state: present
+      when: "'nmap' in (netbox_device.device.tags | map(attribute='name') | list)"
+
+    - name: Remove nmap if nmap tag is absent
+      ansible.builtin.apt:
+        name: nmap
+        state: absent
+        purge: yes
+      when: "'nmap' not in (netbox_device.device.tags | map(attribute='name') | list)"
