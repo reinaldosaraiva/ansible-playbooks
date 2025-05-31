@@ -14,7 +14,8 @@
         data:
           name: "{{ inventory_hostname }}"
         state: present
-        query_only: true
+        query_params:
+          name: "{{ inventory_hostname }}"
       register: netbox_device
 
     - name: Install nmap if nmap tag is present
