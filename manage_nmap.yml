@@ -11,11 +11,11 @@
       ansible.builtin.apt:
         name: nmap
         state: present
-      when: "'nmap' in (netbox_device.device.tags | map(attribute='name') | list)"
+      when: "'nmap' in hostvars[inventory_hostname].tags"
 
     - name: Remove nmap if nmap tag is absent
       ansible.builtin.apt:
         name: nmap
         state: absent
         purge: yes
-      when: "'nmap' not in (netbox_device.device.tags | map(attribute='name') | list)"
+      when: "'nmap' not in hostvars[inventory_hostname].tags"
