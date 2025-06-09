@@ -1,8 +1,7 @@
----
-- name: Print facts for pgsql-citus-2
+- name: Print tags for pgsql-citus-2
   hosts: pgsql-citus-2
-  gather_facts: true  # Habilita a coleta de facts
+  gather_facts: false  # Evita coletar facts do sistema
   tasks:
-    - name: Display all facts for pgsql-citus-2
+    - name: Display NetBox tags for pgsql-citus-2
       ansible.builtin.debug:
-        var: ansible_facts
+        msg: "Tags: {{ hostvars[inventory_hostname].tags }}"
