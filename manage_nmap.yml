@@ -19,3 +19,13 @@
         state: absent
         purge: yes
       when: "'nmap' not in hostvars[inventory_hostname].tags"
+
+    - name: Set NetBox status to Offline if nmap tag is absent
+      netbox.netbox.netbox_device:
+        netbox_url: "{{ lookup('env', 'NETBOX_API') }}"
+        netbox_token: "{{ lookup('env', 'NETBOX_TOKEN') }}"
+        data:
+          name: "{{ inventory_hostname }}"
+          status: Offline
+        state: present
+      when: "'nmap' not in hostvars[inventory_hostname].tags"
