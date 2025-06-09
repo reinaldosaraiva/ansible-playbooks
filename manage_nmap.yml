@@ -7,17 +7,6 @@
         update_cache: yes
       changed_when: false
 
-    - name: Get device tags from NetBox
-      netbox.netbox.netbox_device:
-        netbox_url: "{{ lookup('env', 'NETBOX_API') }}"
-        netbox_token: "{{ lookup('env', 'NETBOX_TOKEN') }}"
-        data:
-          name: "{{ inventory_hostname }}"
-        state: present
-        query_params:
-          - "name={{ inventory_hostname }}"
-      register: netbox_device
-
     - name: Install nmap if nmap tag is present
       ansible.builtin.apt:
         name: nmap
